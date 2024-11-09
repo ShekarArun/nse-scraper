@@ -1,7 +1,7 @@
-import http.client
-import json
 import csv
 import requests
+import time
+from datetime import datetime
 
 # Define the URL and endpoint
 url = "https://www.nseindia.com"
@@ -13,9 +13,11 @@ def fetch_data():
     s = requests.Session()
     headers = {
         'Host': 'www.nseindia.com',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, '
-        'like Gecko) '
-        'Chrome/80.0.3987.149 Safari/537.36',
+        'user-agent': (
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+            'AppleWebKit/537.36 (KHTML, like Gecko) '
+            'Chrome/80.0.3987.149 Safari/537.36'
+        ),
         'accept-language': 'en,gu;q=0.9,hi;q=0.8',
         'accept-encoding': 'gzip, deflate, br',
         'accept': '*/*'
@@ -37,7 +39,7 @@ def fetch_data():
     print('Got response')
     print('Response status code: ', response.status_code)
     response_json = response.json()
-    print('response_json: ', response_json)
+    # print('response_json: ', response_json)
 
     return response_json
 
@@ -73,19 +75,31 @@ def save_to_csv(data, filename='underlyings.csv'):
 
 
 def main():
-    try:
-        print('Fetching data from NSE')
-        # Fetch data from the API
-        data = fetch_data()
-        print('Fetched data from NSE')
+    interval = 90  # 1.5 minutes in seconds
 
-        print('Saving data to CSV')
-        # Save the data to a CSV file
-        save_to_csv(data)
+    print(f"Starting continuous data collection with {
+          interval} seconds interval")
+    while True:
+        try:
+            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print(f"\n[{current_time}] Fetching data from NSE")
 
-        print("Data saved to underlyings.csv")
-    except Exception as e:
-        print("An error occurred:", e)
+            # Fetch data from the API
+            data = fetch_data()
+            print('Fetched data from NSE')
+
+            print('Saving data to CSV')
+            # Save the data to a CSV file
+            save_to_csv(data)
+
+            print("Data saved to underlyings.csv")
+            print(f"Waiting {interval} seconds before next fetch...")
+            time.sleep(interval)
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            print("Retrying in 60 seconds...")
+            time.sleep(60)  # Wait for 1 minute before retrying after an error
 
 
 if __name__ == "__main__":
