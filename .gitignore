@@ -1,3 +1,11 @@
 # Data files
 *.csv
 *.json
+
+*.log
+
+# Virtual environment
+venv
+
+# Cache
+__pycache__
