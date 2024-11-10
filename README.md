@@ -81,3 +81,21 @@ This project is for educational purposes only. Please ensure you comply with NSE
 ## Support
 
 For support, please open an issue in the GitHub repository or contact the maintainers.
+
+## Building the Executable
+
+1. Ensure you have all dependencies installed:
+   ```
+   pip install -r requirements.txt
+   ```
+
+2. Run the build script:
+   ```
+   python build.py
+   ```
+
+3. The executable will be created in the `dist` folder
+
+## For Users
+
+Simply double-click the executable file in the `dist` folder to run the application.
